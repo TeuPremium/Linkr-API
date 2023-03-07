@@ -25,6 +25,22 @@ export async function singupValidate(req, res, next) {
   }
 }
 
-export async function singinValidate(req, res, next) {}
+export async function singinValidate(req, res, next) {
+  const { email, password } = req.body;
+
+  const userExist = await db.query(`SELECT * FROM users WHERE email = $1`, [
+    email,
+  ]);
+
+  if (!userExist.rowCount) {
+    return res.status(401).send("Usuário não cadastrado.");
+  }
+
+  if (!bcrypt.compareSync(password, userExist.rows[0].password)) {
+    return res.status(401).send("Senha invalida.");
+  }
+  res.locals.user = userExist.rows[0];
+  next();
+}
 
 export async function authToken(req, res, next) {}
