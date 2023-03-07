@@ -3,15 +3,15 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export async function signup(req, res) {
-  const { name } = req.body;
-  const { email, password } = res.locals.user;
+  const { username, password, pictureUrl } = req.body;
+  const { email } = res.locals.user;
 
   const hashedPassword = bcrypt.hashSync(password, 10);
 
   try {
     await db.query(
-      `INSERT INTO users (name, email, password) VALUES ($1, $2 , $3);`,
-      [name, email, hashedPassword]
+      `INSERT INTO users (name, email, password, image) VALUES ($1, $2 , $3, $4);`,
+      [username, email, hashedPassword, pictureUrl]
     );
 
     res.status(201).send("Conta criada com sucesso.");
