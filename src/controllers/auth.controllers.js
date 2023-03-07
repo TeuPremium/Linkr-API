@@ -20,4 +20,17 @@ export async function signup(req, res) {
   }
 }
 
-export async function signin(req, res) {}
+export async function signin(req, res) {
+  const { email } = res.locals.user;
+
+  try {
+    //deixei o token para expirar em 100h, para facilitar na pordução, e não ter q ficar copiando tokens sempre, lembrar de apagar!!!!!!
+    const token = jwt.sign({ email }, process.env.SECRET, {
+      expiresIn: "100h",
+    });
+
+    return res.status(200).send({ token, email });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+}
