@@ -55,6 +55,7 @@ export async function authToken(req, res, next) {
 
     //depois que você usar o authToken, em uma rota você pode criar no proximo parametro o ...
     //.. const {email, userId} = res.locals.token
+    // conferir com um console.log(verifyToken)
     res.locals.token = verifyToken;
 
     next();
