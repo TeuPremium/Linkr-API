@@ -43,4 +43,22 @@ export async function singinValidate(req, res, next) {
   next();
 }
 
-export async function authToken(req, res, next) {}
+//usar em rotas autenticadas
+export async function authToken(req, res, next) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace("Bearer ", "");
+
+  if (!token) return res.status(401).send("Usuário não autorizado.");
+
+  try {
+    const verifyToken = jwt.verify(token, process.env.SECRET);
+
+    //depois que você usar o authToken, em uma rota você pode criar no proximo parametro o ...
+    //.. const {email, userId} = res.locals.token
+    res.locals.token = verifyToken;
+
+    next();
+  } catch (error) {
+    res.status(401).send(error.message);
+  }
+}
