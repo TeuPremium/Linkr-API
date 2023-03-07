@@ -2,12 +2,13 @@
   "name": "projetao-linkr",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "module",
+    "type": "git",
     "url": "git+https://github.com/TeuPremium/Linkr-API.git"
   },
   "author": "",
