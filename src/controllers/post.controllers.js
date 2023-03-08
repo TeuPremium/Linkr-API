@@ -9,7 +9,7 @@ export async function addPost(req, res){
 
         return res.sendStatus(201)
     } catch (error) {
-        console.log(error)
+        
         if(error.detail.includes("is not present in table")){
             return res.status(404).send(error.detail)
         }
@@ -26,7 +26,7 @@ export async function deletePost(req, res){
 
         return res.sendStatus(202)
     } catch (error) {
-        console.log(error)
+        
         if(error.detail.includes("is not present in table")){
             return res.status(404).send(error.detail)
         }
