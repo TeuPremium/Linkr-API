@@ -22,7 +22,7 @@ export async function signup(req, res) {
 
 export async function signin(req, res) {
   const { email, id } = res.locals.user;
-
+  console.log(email)
   try {
     //deixei o token para expirar em 100h, para facilitar na pordução, e não ter q ficar copiando tokens sempre, lembrar de apagar!!!!!!
     // aqui também estou passando como parametro o email e o id do usuario junto ao token formado pelo jwt
