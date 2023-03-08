@@ -9,6 +9,10 @@ export async function addPost(req, res){
 
         return res.send()
     } catch (error) {
-        return res.status(500).send(error.message)
+        console.log(error)
+        if(error.detail.includes("is not present in table")){
+            return res.status(404).send(error.detail)
+        }
+        return res.status(500).send(error.detail)
     }
 }
