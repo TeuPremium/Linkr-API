@@ -10,7 +10,7 @@ export async function signup(req, res) {
 
   try {
     await db.query(
-      `INSERT INTO users (name, email, password, image) VALUES ($1, $2 , $3, $4);`,
+      `INSERT INTO users (username, email, password, image) VALUES ($1, $2 , $3, $4);`,
       [username, email, hashedPassword, pictureUrl]
     );
 
