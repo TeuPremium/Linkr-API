@@ -13,6 +13,4 @@ export const postSchema = joi.object({
     userId : joi.string().required(),
     url : joi.string().uri().required(),
     comment : joi.string().required()
-    // createdAt :joi.date(),
-    // updatedAt :joi.date()
 })
