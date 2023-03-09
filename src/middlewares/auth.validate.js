@@ -1,14 +1,12 @@
-import { db } from "../database/database.connection.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { verifyUser } from "../repositories/authRepository.js";
 
 export async function singupValidate(req, res, next) {
   const { email } = req.body;
 
   try {
-    const userExist = await db.query(`SELECT * FROM users WHERE email = $1`, [
-      email,
-    ]);
+    const userExist = await verifyUser(email);
 
     if (userExist.rowCount) {
       return res.status(409).send("Usuário já cadastrado");
@@ -24,9 +22,7 @@ export async function singupValidate(req, res, next) {
 export async function singinValidate(req, res, next) {
   const { email, password } = req.body;
 
-  const userExist = await db.query(`SELECT * FROM users WHERE email = $1`, [
-    email,
-  ]);
+  const userExist = await verifyUser(email);
 
   if (!userExist.rowCount) {
     return res.status(401).send("Usuário não cadastrado.");
