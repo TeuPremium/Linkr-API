@@ -1,6 +1,6 @@
 export function schemaValidate(schema) {
   return (req, res, next) => {
-    const { error } = schema.validate(req.body, { abroutEarly: false });
+    const { error } = schema.validate(req.body, { abortEarly: false });
 
     if (error) {
       const err = error.details.map((err) => err.message);
