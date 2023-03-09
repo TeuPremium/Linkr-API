@@ -33,3 +33,26 @@ export async function deletePost(req, res){
         return res.status(500).send(error.detail)
     }
 }
+
+export async function getPost(req, res){
+    try {
+        const getPosts = await db.query(`SELECT * FROM posts ORDER BY id DESC LIMIT 20 `)
+        return res.status(200).send(getPosts.rows)
+    } catch (error) { 
+        if(error.detail.includes("is not present in table")){
+            return res.status(404).send(error.detail)
+        }
+        return res.status(500).send(error.detail)
+    }
+}
+
+export async function editpost(req, res){
+    try {
+        
+    } catch (error) { 
+        if(error.detail.includes("is not present in table")){
+            return res.status(404).send(error.detail)
+        }
+        return res.status(500).send(error.detail)
+    }
+}
