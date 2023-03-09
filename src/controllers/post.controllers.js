@@ -39,10 +39,12 @@ export async function getPost(req, res){
         const getPosts = await db.query(`SELECT * FROM posts ORDER BY id DESC LIMIT 20 `)
         return res.status(200).send(getPosts.rows)
     } catch (error) { 
-        if(error.detail.includes("is not present in table")){
-            return res.status(404).send(error.detail)
-        }
+        if(error.detail){
         return res.status(500).send(error.detail)
+        }
+        else{
+        return res.status(500).send(error.message)
+        }
     }
 }
 
