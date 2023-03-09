@@ -36,7 +36,15 @@ export async function deletePost(req, res){
 
 export async function getPost(req, res){
     try {
-        const getPosts = await db.query(`SELECT * FROM posts ORDER BY id DESC LIMIT 20 `)
+        const getPosts = await db.query(`
+        SELECT users.username, users.image, posts.url, posts.comment 
+        FROM users, posts 
+        WHERE users.id = posts."userId"
+        ORDER BY posts.id
+        DESC LIMIT 20 
+        `)
+     
+        console.log(getPost.rows)
         return res.status(200).send(getPosts.rows)
     } catch (error) { 
         if(error.detail){
