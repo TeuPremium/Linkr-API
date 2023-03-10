@@ -37,7 +37,7 @@ export async function deletePost(req, res){
 export async function getPost(req, res){
     try {
         const getPosts = await db.query(`
-        SELECT users.username, users.image, posts.url, posts.comment 
+        SELECT users.username, users.image, posts.url, posts.comment, users.id 
         FROM users, posts 
         WHERE users.id = posts."userId"
         ORDER BY posts.id
