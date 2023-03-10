@@ -36,7 +36,7 @@ export async function deletePost(req, res) {
 export async function getPost(req, res) {
   try {
     const getPosts = await db.query(`
-        SELECT users.username, users.image, posts.url, posts.comment 
+        SELECT users.username, users.image, posts.url, posts.comment, users.id, posts.id as "postId" 
         FROM users, posts 
         WHERE users.id = posts."userId"
         ORDER BY posts.id
@@ -80,8 +80,19 @@ export async function getUserPosts(req, res) {
   }
 }
 
-export async function editpost(req, res) {
+export async function editPost(req, res) {
   try {
+    const { comment, postId } = req.body;
+    const updatePost = await db.query(
+      `
+            UPDATE posts
+            SET comment = $1              
+            WHERE id = $2
+        `,
+      [comment, postId]
+    );
+
+    return res.sendStatus(200);
   } catch (error) {
     if (error.detail.includes("is not present in table")) {
       return res.status(404).send(error.detail);
