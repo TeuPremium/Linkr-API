@@ -46,7 +46,7 @@ export async function getPost(req, res) {
     FROM users, posts 
     WHERE users.id = posts."userId"
     ORDER BY posts.id
-    DESC LIMIT ${limit} OFFSET ${offset}
+    DESC LIMIT ${10} OFFSET ${offset}
     `);
     const urlData = [];
     let url;
