@@ -94,7 +94,7 @@ export async function getUserPosts(req, res) {
   try {
     const getPosts = await db.query(
       `
-        SELECT users.username, users.image, posts.url, posts.comment, users.id
+        SELECT users.username, users.image, posts.url, posts.comment, users.id, posts.id as "postId"
         FROM users, posts 
         WHERE users.id = $1
         ORDER BY posts.id
