@@ -1,5 +1,4 @@
 import { db } from "../database/database.connection.js";
-import axios from "axios"
 import * as cheerio from 'cheerio';
 import fetch from "node-fetch";
 
@@ -67,10 +66,7 @@ export async function getPost(req, res) {
 }
 
 async function scrapeData(url){
- 
-  
-  // console.log("piu")
-  // const data = axios(aaa)
+
   try {
     const response = await fetch(url);
     const html = await response.text();

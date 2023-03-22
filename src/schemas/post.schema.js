@@ -5,3 +5,4 @@ export const postSchema = joi.object({
   url: joi.string().uri().required(),
   comment: joi.string().empty(""),
 });
+
