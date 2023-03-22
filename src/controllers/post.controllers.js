@@ -3,7 +3,6 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import fetch from "node-fetch";
 
-
 export async function addPost(req, res) {
   try {
     const { url, comment, userId } = req.body;
@@ -38,13 +37,16 @@ export async function deletePost(req, res) {
 }
 
 export async function getPost(req, res) {
+  const limit = req.params.limit || 10;
+  const offset = limit - 10;
+
   try {
     const getPosts = await db.query(`
     SELECT users.username, users.image, posts.url, posts.comment, users.id, posts.id as "postId" 
     FROM users, posts 
     WHERE users.id = posts."userId"
     ORDER BY posts.id
-    DESC LIMIT 20 
+    DESC LIMIT ${10} OFFSET ${offset}
     `);
     const urlData = [];
     let url;

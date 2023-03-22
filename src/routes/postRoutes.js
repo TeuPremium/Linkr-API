@@ -12,5 +12,5 @@ export const postRouter = Router();
 
 postRouter.post("/posts", schemaValidate(postSchema), addPost);
 postRouter.delete("/posts", deletePost);
-postRouter.get("/posts", getPost);
+postRouter.get("/posts/:limit?", getPost);
 postRouter.get("/user/:id", getUserPosts);
