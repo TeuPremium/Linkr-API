@@ -6,12 +6,24 @@ export async function addPost(req, res) {
   try {
     const { url, comment, userId } = req.body;
 
-    await db.query(
-      'INSERT INTO posts (url, "userId", comment) VALUES ($1,$2,$3)',
+     await db.query(
+      `
+      INSERT INTO posts (url, "userId", comment)
+      VALUES ($1,$2,$3)
+       `,
       [url, userId, comment]
     );
+      const getUserName = await db.query(`
+      SELECT username 
+      FROM users
+      WHERE id = $1
+      `, [userId])
+      
 
-    return res.sendStatus(201);
+      const urlData = await scrapeData(url)
+      getUserName.rows[0].urlData = urlData;
+
+    return res.send(getUserName.rows[0]).status(201);
   } catch (error) {
     if (error.detail.includes("is not present in table")) {
       return res.status(404).send(error.detail);
@@ -81,7 +93,6 @@ async function scrapeData(url){
       image,
     };
   } catch (error) {
-    console.error(error);
     return { title: null, description: null, image: null };
   }
 }
