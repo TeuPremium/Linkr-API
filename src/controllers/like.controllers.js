@@ -10,7 +10,7 @@ export async function getLikes(req, res) {
          WHERE likes."postId" = $1;`,
       [postId]
     );
-    const likedUsers = result.rows.map((e) => e.name);
+    const likedUsers = result.rows.map((l) => l.name);
     res.send({ likedUsers, count: likedUsers.length }).status(200);
   } catch (error) {
     res.status(500).send(error.message);
