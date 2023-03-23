@@ -3,7 +3,7 @@ import {
   deleteLike,
   getLikes,
   postLike,
-} from "../controllers/like.controllers";
+} from "../controllers/like.controllers.js";
 
 export const likeRouter = Router();
 
