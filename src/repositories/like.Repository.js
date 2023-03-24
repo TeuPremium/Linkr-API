@@ -16,7 +16,7 @@ export async function likeRepository(userId, postId) {
   ]);
 }
 export async function deslikeRepository(userId, postId) {
-  return db.query(`DELETE FROM likes ("userId", "postId) VALUES ($1, $2) ;`, [
+  return db.query(`DELETE FROM likes WHERE "userId" = $1 AND "postId" = $2 ;`, [
     userId,
     postId,
   ]);
