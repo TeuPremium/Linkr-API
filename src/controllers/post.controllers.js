@@ -113,11 +113,7 @@ export async function getUserPosts(req, res) {
     );
     return res.status(200).send(getPosts.rows);
   } catch (error) {
-    if (error.detail) {
-      return res.status(500).send(error.detail);
-    } else {
-      return res.status(500).send(error.message);
-    }
+    return res.status(500).send(error.message);
   }
 }
 
