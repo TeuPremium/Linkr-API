@@ -10,7 +10,10 @@ export async function getLikes(req, res) {
   const { postId } = req.params;
   try {
     const result = await getLikeRepository(postId);
-    const likedUsers = result.rows.map((l) => l.username);
+    const likedUsers = result.rows.map((l) => ({
+      id: l.id,
+      username: l.username,
+    }));
     res.status(200).send({ likedUsers, count: likedUsers.length });
   } catch (error) {
     res.status(500).send(error.message);
