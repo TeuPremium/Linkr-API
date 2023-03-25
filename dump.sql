@@ -122,7 +122,10 @@ CREATE TABLE public.posts (
     url character varying(255) NOT NULL,
     comment character varying(255) NOT NULL,
     "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "updatedAt" timestamp without time zone
+    "updatedAt" timestamp without time zone,
+    "image" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "title" TEXT NOT NULL 
 );
 
 
