@@ -2,7 +2,7 @@ import { db } from "../database/database.connection.js";
 
 export async function getLikeRepository(postId) {
   return db.query(
-    `SELECT users.name FROM likes
+    `SELECT users.username FROM likes
            JOIN users ON likes."userId" = users.id
            WHERE likes."postId" = $1;`,
     [postId]
