@@ -7,11 +7,11 @@ import {
 
 //enviar infomações de like
 export async function getLikes(req, res) {
-  const { postId } = req.params.postId;
+  const { postId } = req.params;
   try {
     const result = await getLikeRepository(postId);
-    const likedUsers = result.rows.map((l) => l.name);
-    res.send({ likedUsers, count: likedUsers.length }).status(200);
+    const likedUsers = result.rows.map((l) => l.username);
+    res.status(200).send({ likedUsers, count: likedUsers.length });
   } catch (error) {
     res.status(500).send(error.message);
   }
