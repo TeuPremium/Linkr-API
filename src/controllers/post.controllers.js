@@ -1,5 +1,5 @@
 import { db } from "../database/database.connection.js";
-import * as cheerio from 'cheerio';
+import * as cheerio from "cheerio";
 import fetch from "node-fetch";
 import { addTag } from "./hashtags.controller.js";
 
@@ -79,8 +79,7 @@ export async function getPost(req, res) {
   }
 }
 
-async function scrapeData(url){
-
+async function scrapeData(url) {
   try {
     const response = await fetch(url);
     const html = await response.text();
@@ -103,17 +102,34 @@ export async function getUserPosts(req, res) {
   const { id } = req.params;
 
   try {
-    const getPosts = await db.query(
+    const getUserPosts = await db.query(
       `
-        SELECT users.username, users.image, posts.url, posts.comment, users.id, posts.id as "postId"
-        FROM users, posts 
-        WHERE users.id = $1
-        ORDER BY posts.id
-        DESC 
+        SELECT users.id, users.username, users.image, posts.url, posts.comment, posts.id as "postId"
+        FROM users, posts
+        WHERE users.id = $1 AND posts."userId"= $1
+        ORDER BY posts.id DESC
         `,
       [id]
     );
-    return res.status(200).send(getPosts.rows);
+
+    if (getUserPosts.rows.length === 0) {
+      const getUserOnly = await db.query(
+        `SELECT id AS userId, username, image FROM users WHERE users.id = $1`,
+        [id]
+      );
+
+      return res.status(200).send(getUserOnly.rows);
+    } else {
+      const urlData = [];
+      let url;
+      for (let index = 0; index < getUserPosts.rows.length; index++) {
+        let url = getUserPosts.rows[index].url;
+        const element = await scrapeData(url);
+        getUserPosts.rows[index].urlData = element;
+      }
+
+      return res.status(200).send(getUserPosts.rows);
+    }
   } catch (error) {
     return res.status(500).send(error.message);
   }
