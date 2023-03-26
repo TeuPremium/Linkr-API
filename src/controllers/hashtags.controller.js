@@ -48,3 +48,20 @@ export async function createTag(hashtag) {
         }
     
     }
+
+export async function tagPosts(req, res){
+    try {
+        const {hashtag} = req.params
+        console.log(hashtag)
+        const hashtagId = await createTag(hashtag)
+        console.log(hashtagId)
+        const taggedPosts = await db.query(`
+            SELECT "postId" FROM "postHashtag"
+            WHERE "hashtagId" = $1
+        `, [hashtagId]) 
+
+        return res.send(taggedPosts.rows)
+    } catch (error) {
+          return res.status(500).send(error.message);
+    }
+}
