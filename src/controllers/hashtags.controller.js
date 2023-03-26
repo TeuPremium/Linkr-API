@@ -56,7 +56,7 @@ export async function tagPosts(req, res){
         const hashtagId = await createTag(hashtag)
         console.log(hashtagId)
         const taggedPosts = await db.query(`
-            SELECT * FROM "postHashtag"
+            SELECT "postId" FROM "postHashtag"
             WHERE "hashtagId" = $1
         `, [hashtagId]) 
 
