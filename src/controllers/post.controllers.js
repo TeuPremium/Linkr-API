@@ -1,31 +1,36 @@
 import { db } from "../database/database.connection.js";
 import * as cheerio from 'cheerio';
 import fetch from "node-fetch";
+import { addTag } from "./hashtags.controller.js";
 
 export async function addPost(req, res) {
   try {
     const { url, comment, userId } = req.body;
     const urlData = await scrapeData(url)
     const {title, description, image} = urlData
-     await db.query(
+    const post = await db.query(
       `
       INSERT INTO posts (url, "userId", comment, title, description, image)
       VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING id
        `,
       [url, userId, comment, urlData.title, urlData.description, urlData.image]
     );
-      const getUserName = await db.query(`
-      SELECT username 
+      
+    const getUserName = await db.query(`
+    SELECT username 
       FROM users
       WHERE id = $1
       `, [userId])
       
-
+      
       getUserName.rows[0].title = title;
       getUserName.rows[0].description = description;
       getUserName.rows[0].postImage = image;
+      getUserName.rows[0].id = userId;
+      getUserName.rows[0].postId = post.rows[0].id;
       
-
+      addTag(comment, post.rows[0].id)
     return res.send(getUserName.rows[0]).status(201);
   } catch (error) {
     if (error.detail.includes("is not present in table")) {
