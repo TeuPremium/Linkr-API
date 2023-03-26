@@ -25,8 +25,8 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public.hashtag (
-    id integer NOT NULL,
-    "hashtagName" character varying(100) NOT NULL
+    id SERIAL PRIMARY KEY,
+    "hashtagName" character varying(100) NOT NULL UNIQUE
 );
 
 
@@ -86,7 +86,7 @@ ALTER SEQUENCE public.likes_id_seq OWNED BY public.likes.id;
 --
 
 CREATE TABLE public."postHashtag" (
-    id integer NOT NULL,
+    id SERIAL PRIMARY KEY,
     "postId" integer NOT NULL,
     "hashtagId" integer NOT NULL
 );
@@ -122,7 +122,10 @@ CREATE TABLE public.posts (
     url character varying(255) NOT NULL,
     comment character varying(255) NOT NULL,
     "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
-    "updatedAt" timestamp without time zone
+    "updatedAt" timestamp without time zone,
+    "image" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "title" TEXT NOT NULL 
 );
 
 

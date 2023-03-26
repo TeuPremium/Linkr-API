@@ -1,30 +1,36 @@
 import { db } from "../database/database.connection.js";
 import * as cheerio from "cheerio";
 import fetch from "node-fetch";
+import { addTag } from "./hashtags.controller.js";
 
 export async function addPost(req, res) {
   try {
     const { url, comment, userId } = req.body;
-
-    await db.query(
+    const urlData = await scrapeData(url)
+    const {title, description, image} = urlData
+    const post = await db.query(
       `
-      INSERT INTO posts (url, "userId", comment)
-      VALUES ($1,$2,$3)
+      INSERT INTO posts (url, "userId", comment, title, description, image)
+      VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING id
        `,
-      [url, userId, comment]
+      [url, userId, comment, urlData.title, urlData.description, urlData.image]
     );
-    const getUserName = await db.query(
-      `
-      SELECT username 
+      
+    const getUserName = await db.query(`
+    SELECT username 
       FROM users
       WHERE id = $1
-      `,
-      [userId]
-    );
-
-    const urlData = await scrapeData(url);
-    getUserName.rows[0].urlData = urlData;
-
+      `, [userId])
+      
+      
+      getUserName.rows[0].title = title;
+      getUserName.rows[0].description = description;
+      getUserName.rows[0].postImage = image;
+      getUserName.rows[0].id = userId;
+      getUserName.rows[0].postId = post.rows[0].id;
+      
+      addTag(comment, post.rows[0].id)
     return res.send(getUserName.rows[0]).status(201);
   } catch (error) {
     if (error.detail.includes("is not present in table")) {
@@ -55,20 +61,14 @@ export async function getPost(req, res) {
 
   try {
     const getPosts = await db.query(`
-    SELECT users.username, users.image, posts.url, posts.comment, users.id, posts.id as "postId" 
+    SELECT users.username, users.image, posts.url, posts.title, posts.image as "postImage",
+    posts.description, posts.comment, users.id, posts.id as "postId" 
     FROM users, posts 
     WHERE users.id = posts."userId"
     ORDER BY posts.id
     DESC LIMIT ${10} OFFSET ${offset}
     `);
-    const urlData = [];
-    let url;
-    for (let index = 0; index < getPosts.rows.length; index++) {
-      let url = getPosts.rows[index].url;
-      const element = await scrapeData(url);
-      getPosts.rows[index].urlData = element;
-    }
-
+    
     return res.status(200).send(getPosts.rows);
   } catch (error) {
     if (error.detail) {
