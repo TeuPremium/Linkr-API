@@ -52,15 +52,31 @@ export async function createTag(hashtag) {
 export async function tagPosts(req, res){
     try {
         const {hashtag} = req.params
-        console.log(hashtag)
         const hashtagId = await createTag(hashtag)
-        console.log(hashtagId)
         const taggedPosts = await db.query(`
             SELECT "postId" FROM "postHashtag"
-            WHERE "hashtagId" = $1
+            WHERE "hashtagId" = ($1)
+            ORDER BY "postId" DESC
         `, [hashtagId]) 
+        
+        const posts = []
+        let postInfo
 
-        return res.send(taggedPosts.rows)
+        for (let index = 0; index < taggedPosts.rowCount; index++) {
+            console.log(taggedPosts.rows[index].postId)
+            postInfo = await db.query(`
+            SELECT users.username, users.image, posts.url, posts.title, posts.image as "postImage",
+            posts.description, posts.comment, users.id, posts.id as "postId" 
+            FROM users, posts 
+            WHERE posts.id = $1
+            ORDER BY posts.id
+        `, [taggedPosts.rows[index].postId]) 
+
+            posts[index] = postInfo.rows[0]
+        }
+        console.log(posts)
+
+        return res.send(posts)
     } catch (error) {
           return res.status(500).send(error.message);
     }
