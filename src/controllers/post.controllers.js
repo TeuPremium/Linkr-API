@@ -42,15 +42,12 @@ export async function addPost(req, res) {
 
 export async function deletePost(req, res) {
   try {
-    const { postId } = req.body;
-
-    await db.query("DELETE FROM posts WHERE id = ($1)", [postId]);
+    const { id } = req.params;
+    
+    await db.query("DELETE FROM posts WHERE id = ($1)", [id]);
 
     return res.sendStatus(202);
   } catch (error) {
-    if (error.detail.includes("is not present in table")) {
-      return res.status(404).send(error.detail);
-    }
     return res.status(500).send(error.detail);
   }
 }
@@ -68,6 +65,28 @@ export async function getPost(req, res) {
     ORDER BY posts.id
     DESC LIMIT ${10} OFFSET ${offset}
     `);
+    
+    return res.status(200).send(getPosts.rows);
+  } catch (error) {
+    if (error.detail) {
+      return res.status(500).send(error.detail);
+    } else {
+      return res.status(500).send(error.message);
+    }
+  }
+}
+
+export async function getPostById(req, res) {
+  const {postId} = req.body
+
+  try {
+    const getPosts = await db.query(`
+    SELECT users.username, users.image, posts.url, posts.title, posts.image as "postImage",
+    posts.description, posts.comment, users.id, posts.id as "postId" 
+    FROM users, posts 
+    WHERE post.id = $1
+    ORDER BY posts.id
+    `, );
     
     return res.status(200).send(getPosts.rows);
   } catch (error) {
