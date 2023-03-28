@@ -43,7 +43,7 @@ export async function addPost(req, res) {
 export async function deletePost(req, res) {
   try {
     const { id } = req.params;
-    console.log(req.params)
+    
     await db.query("DELETE FROM posts WHERE id = ($1)", [id]);
 
     return res.sendStatus(202);
