@@ -156,21 +156,22 @@ export async function getUserPosts(req, res) {
 
 export async function editPost(req, res) {
   try {
-    const { comment, postId } = req.body;
+    const { comment } = req.body;
+    const { id } = req.params
+    
     const updatePost = await db.query(
       `
-            UPDATE posts
-            SET comment = $1              
-            WHERE id = $2
-        `,
-      [comment, postId]
-    );
+      UPDATE posts
+      SET comment = $1              
+      WHERE id = $2
+      RETURNING comment
+      `,
+      [comment, id]
+      );
 
-    return res.sendStatus(200);
+      addTag(comment, id)
+    return res.status(200).send(updatePost.rows[0]);
   } catch (error) {
-    if (error.detail.includes("is not present in table")) {
-      return res.status(404).send(error.detail);
-    }
     return res.status(500).send(error.detail);
   }
 }
